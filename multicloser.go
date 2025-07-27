@@ -67,9 +67,24 @@ func (m *MultiCloser) Close() error {
 	return nil
 }
 
+// CloseAndReset is like Close, but it ignores all errors
+// and resets the MultiCloser after closing all registered closers.
+func (m *MultiCloser) CloseAndReset() {
+	_ = m.Close()
+}
+
 // Returns the number of io.Closer(s) registered.
 func (m *MultiCloser) Len() int {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	return len(m.closers)
+}
+
+// Contains reports whether the given io.Closer is registered.
+// This could be useful for debugging, among other purposes.
+func (m *MultiCloser) Contains(c io.Closer) bool {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	_, ok := m.closers[c]
+	return ok
 }

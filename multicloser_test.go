@@ -104,6 +104,36 @@ func TestUnregister(t *testing.T) {
 	}
 }
 
+func TestContains(t *testing.T) {
+	mc := multicloser.New()
+
+	c1 := &mockCloser{}
+	c2 := &mockCloser{}
+
+	mc.Register(c1)
+
+	if !mc.Contains(c1) {
+		t.Fatalf("Expected MultiCloser to contain c1, it does not.")
+	}
+	if mc.Contains(c2) {
+		t.Fatalf("Expected MultiCloser not to contain c2, but it does.")
+	}
+}
+
+func TestCloseAndReset(t *testing.T) {
+	mc := multicloser.New()
+
+	c1 := &mockCloser{}
+	c2 := &mockCloser{}
+
+	mc.Register(c1)
+	mc.Register(c2)
+	mc.CloseAndReset()
+	if num := mc.Len(); num != 0 {
+		t.Fatalf("Expected 0 length after CloseAndReset, got %d", num)
+	}
+}
+
 func TestCloseEmpty(t *testing.T) {
 	mc := multicloser.New()
 	err := mc.Close()
