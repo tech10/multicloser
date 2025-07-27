@@ -24,9 +24,9 @@
 //
 // # Concurrency
 //
-// MultiCloser is safe for concurrent use. All operations — Register, Unregister, Close,
-// and Len — are protected by a mutex. However, behavior is deterministic only in the
-// absence of interleaved Register/Unregister/Close calls.
+// MultiCloser is safe for concurrent use. All operations, Register, Unregister, Close,
+// and Len, are protected by a mutex. However, behavior is deterministic only in the
+// absence of non-sequential Register/Unregister/Close calls.
 //
 // For example, registering and unregistering the same closer concurrently may result
 // in the closer being either closed or skipped, depending on the timing of Go's scheduler.
